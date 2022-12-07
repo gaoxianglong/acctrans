@@ -103,6 +103,7 @@ public class TransferServiceImpl implements TransferService {
         globalRepository.addTryLog(tid);
         // TODO 省去记录账务明细
         logger.info("记账一阶段处理成功");
+        // 调用其他服务
         otherSevice.run();
     }
 
