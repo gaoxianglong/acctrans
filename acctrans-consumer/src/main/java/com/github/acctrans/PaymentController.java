@@ -31,7 +31,6 @@ public class PaymentController {
     @DubboReference(version = "1.0.0")
     private TransferService transferService;
 
-    //@HmilyTCC
     @GetMapping(value = "/pay")
     public String pay() {
         TransferDTO transferDTO = new TransferDTO();

@@ -15,53 +15,16 @@
  */
 package com.github.acctrans.api;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+@Data
 public class TransferDTO implements Serializable {
     private Long fromAccountId;
     private Long toAccountId;
     private Long tid;
     private BigDecimal amount;
     private Integer currency;
-
-    public Long getFromAccountId() {
-        return fromAccountId;
-    }
-
-    public void setFromAccountId(Long fromAccountId) {
-        this.fromAccountId = fromAccountId;
-    }
-
-    public Long getToAccountId() {
-        return toAccountId;
-    }
-
-    public void setToAccountId(Long toAccountId) {
-        this.toAccountId = toAccountId;
-    }
-
-    public Long getTid() {
-        return tid;
-    }
-
-    public void setTid(Long tid) {
-        this.tid = tid;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public Integer getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Integer currency) {
-        this.currency = currency;
-    }
 }
