@@ -95,7 +95,7 @@ public class TransferServiceImpl implements TransferService {
             setAccountId(transferDTO.getToAccountId());
             setTid(tid);
             setAmount(transferDTO.getAmount());
-            // 类型1为收款
+            // 类型2为收款
             setType(2);
             setCurrency(transferDTO.getCurrency());
         }});
@@ -171,6 +171,16 @@ public class TransferServiceImpl implements TransferService {
         AccountEntity accountEntity = accountRepository.getAccount(transferDTO.getFromAccountId());
         accountEntity.setSysAmount(accountEntity.getSysAmount().subtract(transferDTO.getAmount()));
         accountRepository.setSysAmount(accountEntity);
+        // 删除from冻结资金记录
+        freezeRepository.removeFreezeAmount(new FreezeEntity() {{
+            setAccountId(transferDTO.getFromAccountId());
+            setTid(tid);
+        }});
+        // 删除to冻结资金记录
+        freezeRepository.removeFreezeAmount(new FreezeEntity() {{
+            setAccountId(transferDTO.getToAccountId());
+            setTid(tid);
+        }});
         logger.warn("记账二阶段回滚成功");
         // 添加分支事务记录
         globalRepository.addCancleLog(tid);
