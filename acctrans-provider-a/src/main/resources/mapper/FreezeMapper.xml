@@ -18,7 +18,8 @@
         SELECT *
         FROM t_freeze
         WHERE account_id = #{accountId}
-          AND tid = #{tid}
+          AND tid = #{tid} FOR
+        UPDATE
     </select>
 
     <delete id="deleteFreezeAmount" parameterType="com.github.acctrans.dao.freeze.FreezeDO">

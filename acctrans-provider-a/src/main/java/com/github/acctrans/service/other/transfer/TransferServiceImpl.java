@@ -67,6 +67,7 @@ public class TransferServiceImpl implements TransferService {
             return;
         }
         AccountEntity from = accountRepository.getAccount(transferDTO.getFromAccountId());
+        AccountEntity to = accountRepository.getAccount(transferDTO.getToAccountId());
         // 余额检查
         if (from.getBalance().subtract(from.getSysAmount()).compareTo(transferDTO.getAmount()) == -1) {
             throw new RuntimeException(String.format("%s账户余额不足", transferDTO.getFromAccountId()));
@@ -75,7 +76,6 @@ public class TransferServiceImpl implements TransferService {
         if (from.getAccountType() == 1) {
             throw new RuntimeException(String.format("%s状态异常", from.getAccountId()));
         }
-        AccountEntity to = accountRepository.getAccount(transferDTO.getToAccountId());
         if (to.getAccountType() == 1) {
             throw new RuntimeException(String.format("%s状态异常", to.getAccountId()));
         }
@@ -111,15 +111,18 @@ public class TransferServiceImpl implements TransferService {
     public void confirm(TransferDTO transferDTO) {
         logger.info("confirm");
         Long tid = transferDTO.getTid();
+        AccountEntity from = accountRepository.getAccount(transferDTO.getFromAccountId());
+        AccountEntity to = accountRepository.getAccount(transferDTO.getToAccountId());
+
         // 获取from冻结资金信息
         List<FreezeEntity> fromFreezeEntitys = freezeRepository.getFreezeAmount(new FreezeEntity() {{
             setAccountId(transferDTO.getFromAccountId());
             setTid(tid);
         }});
         BigDecimal fromAmount = BigDecimal.ZERO;
-        for (FreezeEntity from : fromFreezeEntitys) {
-            if (from.getType() == 1) {
-                fromAmount = fromAmount.add(from.getAmount());
+        for (FreezeEntity fromFreezeEntity : fromFreezeEntitys) {
+            if (fromFreezeEntity.getType() == 1) {
+                fromAmount = fromAmount.add(fromFreezeEntity.getAmount());
             }
         }
         // 删除from冻结资金记录
@@ -131,21 +134,19 @@ public class TransferServiceImpl implements TransferService {
             setTid(tid);
         }});
         BigDecimal toAmount = BigDecimal.ZERO;
-        for (FreezeEntity to : toFreezeEntitys) {
-            if (to.getType() == 2) {
-                toAmount = toAmount.add(to.getAmount());
+        for (FreezeEntity toFreezeEntity : toFreezeEntitys) {
+            if (toFreezeEntity.getType() == 2) {
+                toAmount = toAmount.add(toFreezeEntity.getAmount());
             }
         }
         // 删除to冻结资金记录
         freezeRepository.removeFreezeAmount(toFreezeEntitys.get(0));
 
         // 变更from余额
-        AccountEntity from = accountRepository.getAccount(transferDTO.getFromAccountId());
         from.setBalance(from.getBalance().subtract(fromAmount));
         from.setSysAmount(from.getSysAmount().subtract(fromAmount));
         accountRepository.setBalanceAndSysAmount(from);
         // 变更to余额
-        AccountEntity to = accountRepository.getAccount(transferDTO.getToAccountId());
         to.setBalance(to.getBalance().add(toAmount));
         accountRepository.setBalanceAndSysAmount(to);
         // 添加分支事务记录

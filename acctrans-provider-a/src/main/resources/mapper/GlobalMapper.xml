@@ -4,19 +4,22 @@
     <select id="queryTryLog" parameterType="long" resultType="int">
         SELECT COUNT(tid)
         FROM t_try_log
-        WHERE tid = #{tid}
+        WHERE tid = #{tid} FOR
+        UPDATE
     </select>
 
     <select id="queryConfirmLog" parameterType="long" resultType="int">
         SELECT COUNT(tid)
         FROM t_confirm_log
-        WHERE tid = #{tid}
+        WHERE tid = #{tid} FOR
+        UPDATE
     </select>
 
     <select id="queryCancleLog" parameterType="long" resultType="int">
         SELECT COUNT(tid)
         FROM t_cancle_log
-        WHERE tid = #{tid}
+        WHERE tid = #{tid} FOR
+        UPDATE
     </select>
 
     <insert id="insertTryLog" parameterType="long">
