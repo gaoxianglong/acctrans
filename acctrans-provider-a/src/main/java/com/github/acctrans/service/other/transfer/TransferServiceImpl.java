@@ -170,7 +170,8 @@ public class TransferServiceImpl implements TransferService {
         AccountEntity accountEntity = accountRepository.getAccount(transferDTO.getFromAccountId());
         accountEntity.setSysAmount(accountEntity.getSysAmount().subtract(transferDTO.getAmount()));
         accountRepository.setSysAmount(accountEntity);
-        // 还原from余额
         logger.warn("记账二阶段回滚成功");
+        // 添加分支事务记录
+        globalRepository.addCancleLog(tid);
     }
 }
