@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.acctrans.dao.global.GlobalDao">
+    <select id="queryTryLog" parameterType="long" resultType="int">
+        SELECT COUNT(tid)
+        FROM t_try_log
+        WHERE tid = #{tid}
+    </select>
+
+    <select id="queryConfirmLog" parameterType="long" resultType="int">
+        SELECT COUNT(tid)
+        FROM t_confirm_log
+        WHERE tid = #{tid}
+    </select>
+
+    <select id="queryCancleLog" parameterType="long" resultType="int">
+        SELECT COUNT(tid)
+        FROM t_cancle_log
+        WHERE tid = #{tid}
+    </select>
+
+    <insert id="insertTryLog" parameterType="long">
+        INSERT INTO t_try_log(tid, create_time)
+        VALUES (#{tid}, NOW())
+    </insert>
+
+    <insert id="insertConfirmLog" parameterType="long">
+        INSERT INTO t_confirm_log(tid, create_time)
+        VALUES (#{tid}, NOW())
+    </insert>
+
+    <insert id="insertCancleLog" parameterType="long">
+        INSERT INTO t_cancle_log(tid, create_time)
+        VALUES (#{tid}, NOW())
+    </insert>
+</mapper>
